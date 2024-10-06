@@ -26,6 +26,7 @@ def parse_yaml(yml_input):
     with open(yml_input, 'r') as f:
         get_http = yaml.safe_load(f)
 
+        # Store urls in an array
         urls = []
         for links in get_http:
             urls.append(links['url'])
@@ -33,13 +34,17 @@ def parse_yaml(yml_input):
     return urls
 
 def verify_http_service(urls):
+    # Create empty array to store status
     status_codes = []
     count_up = 0
     count_down = 0
+    # Iterate through each URL
     for url in urls:
         response = requests.get(url)
+        # String formatting
         url = url.rstrip('/')
         url_split = url.split('://')
+        # Get the latency of each URL
         latency = measure_latency(host=url_split[1])
         if not latency:
             print("DOWN")
@@ -52,6 +57,7 @@ def verify_http_service(urls):
             status_codes.append("DOWN")
         time.sleep(15)
 
+        # Calculations for health status
         for s in status_codes:
             if s == 'UP':
                 count_up += 1
